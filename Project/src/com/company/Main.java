@@ -1,33 +1,25 @@
-package com.company;
-
-
 import javax.swing.*;
 import java.awt.*;
-
 import java.util.ArrayList;
 import java.util.Random;
 
-class MyPanel extends JPanel {
-    public void paint(Graphics g) {
-        g.setColor(Color.red);
-        g.fillRect(10,10,100,100);
-    }
-}
+public class GameOfLifeClass {
 
-class GameOfLife {
     public static void main(String[] args) {
 
+
+        Game();
     }
-    public void Game() {
 
+    public static void Game() {
 
-        int row = 10;
-        int col = 10;
+        int row = 30;
+        int col = 100;
 
         String[][] before = new String[row][col];
         String[][] after = new String[row][col];
 
-        int percent = (int) (col * row * 0.5);
+        int percent = (int) (col * row * 0.8);
         Random rand = new Random();
 
         for (int i = 0; i < before.length; i++) {
@@ -64,14 +56,16 @@ class GameOfLife {
 
         ArrayList<RectDraw> rects = new ArrayList<RectDraw>();
 
-
         frame.setLayout(new GridLayout(0,10));
 
+        frame.setSize(col*30,row*30);
 
-        frame.setSize(500, 500);
+        //frame.getContentPane().setSize(new Dimension(row*5, col*5));
+        //frame.setSize(row*5,col*5);
+
         frame.setVisible(true);
-
-        while (true) {
+        boolean con = true;
+        while (con) {
 
             for (int i = 0; i < before.length; i++) {
                 for (int j = 0; j < before.length; j++) {
@@ -80,57 +74,56 @@ class GameOfLife {
 
             }
 
+            int count =0;
+            for (int i = 0; i < before.length; i++) {
+                for (int j = 0; j < before.length; j++)
+                    if (before[i][j].equals(after[i][j])) {
+                        count++;
+
+                    }
+            }
+
+            if(count == 100){
+                con =false;
+            }
+
             for (int i = 0; i < before.length; i++) {
                 for (int j = 0; j < before.length; j++) {
                     before[i][j] = after[i][j];
                 }
             }
 
-            for(int i = 0; i < 10; i++){
-                for(int j = 0; j<10; j++){
-                    if(before[i][j].equals("C")) {
-                        rects.add(new RectDraw());
-                        rects.get(i).Dims(10, 10, 10, 10, Color.GRAY);
-                        frame.add(rects.get(i));
-                    }else{
-                        rects.add(new RectDraw());
-                        rects.get(i).Dims(10, 10, 10, 10, Color.BLACK);
-                        frame.add(rects.get(i));
-                    }
-            }
-            }
-
-            frame.repaint();
+            count = 0;
             for (int i = 0; i < before.length; i++) {
                 for (int j = 0; j < before.length; j++) {
-                    System.out.print(before[i][j]);
+                    if (before[i][j].equals("C")) {
+                        rects.add(new RectDraw());
+                        rects.get(count).Dims(10, 10, 30, 30, Color.GRAY);
+                        frame.add(rects.get(count));
+                    } else {
+                        rects.add(new RectDraw());
+                        rects.get(count).Dims(10, 10, 30, 30, Color.BLACK);
+                        frame.add(rects.get(count));
+                    }
+                    count++;
                 }
-                System.out.println();
             }
 
+            frame.getContentPane().setBackground(Color.BLACK);
+
+            frame.repaint();
+
+
             try {
-                Thread.sleep(1000);
+                Thread.sleep(0);
             } catch (InterruptedException e) {
             }
-            System.out.println();
 
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+        frame.dispose();
+        Game();
     }
-
 
     public static String Cell(int a, int b, String[][] before, String p) {
 
@@ -138,17 +131,14 @@ class GameOfLife {
 
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
-                try {
-                    if (before[a + i][b + j].equalsIgnoreCase("C") && !(i == 0 && j == 0)) {
+
+                if (before[(((a + i) % before.length)+before.length)%before.length][(((b + j) % before[0].length)+before[0].length)%before[0].length].equalsIgnoreCase("C") && !(i == 0 && j == 0)) {
                         count++;
 
                     }
-                } catch (Exception e) {
 
-                }
             }
         }
-
 
         //System.out.println(a + " " + b +":" +count);
         if (count == 3 && p.equalsIgnoreCase("-"))
@@ -162,16 +152,9 @@ class GameOfLife {
         }
         return "-";
 
-
     }
-}
 
 
-public class Main extends JPanel {
-    public static void main(String[] args) {
-        GameOfLife game = new GameOfLife();
-        game.Game();
-    }
 }
 
 class RectDraw extends JPanel {
@@ -190,6 +173,5 @@ class RectDraw extends JPanel {
     private int x, y, width, height;
     private Color Color;
 
-  }
-
+}
 
